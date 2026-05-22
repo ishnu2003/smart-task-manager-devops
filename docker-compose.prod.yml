@@ -1,0 +1,8 @@
+services:
+  task-manager-production:
+    image: smart-task-manager:production
+    container_name: task-manager-production
+    ports:
+      - "5050:5000"
+    environment:
+      - FLASK_ENV=production
