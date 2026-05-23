@@ -4,7 +4,7 @@ pipeline {
     environment {
         STAGING_IMAGE = "smart-task-manager:staging"
         PRODUCTION_IMAGE = "smart-task-manager:production"
-        STAGING_PORT = "5000"
+        STAGING_PORT = "5051"
         PRODUCTION_PORT = "5050"
         PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Docker.app/Contents/Resources/bin"
     }

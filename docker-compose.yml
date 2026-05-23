@@ -4,6 +4,7 @@ services:
     image: smart-task-manager:staging
     container_name: task-manager-staging
     ports:
-      - "5050:5000"
+      - "5051:5000"
     environment:
       - FLASK_ENV=staging
+      
