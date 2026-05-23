@@ -1,0 +1,11 @@
+venv/
+.git/
+__pycache__/
+.pytest_cache/
+.coverage
+*.pyc
+.DS_Store
+pylint-report.txt
+bandit-report.txt
+pip-audit-report.txt
+test-results.xml

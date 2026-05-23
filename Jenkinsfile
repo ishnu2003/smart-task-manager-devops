@@ -6,13 +6,14 @@ pipeline {
         PRODUCTION_IMAGE = "smart-task-manager:production"
         STAGING_PORT = "5000"
         PRODUCTION_PORT = "5050"
+        PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Docker.app/Contents/Resources/bin"
     }
 
     stages {
         stage('Build') {
             steps {
                 echo 'Build Stage: Creating Docker image for the Flask API...'
-                sh 'docker build -t ${STAGING_IMAGE} .'
+                sh 'docker build --no-cache -t ${STAGING_IMAGE} .'
             }
         }
 
@@ -21,13 +22,13 @@ pipeline {
                 echo 'Test Stage: Running automated pytest test suite...'
                 sh 'rm -rf venv'
                 sh 'python3 -m venv venv'
-                sh '. venv/bin/activate && pip install --upgrade pip'
-                sh '. venv/bin/activate && pip install -r requirements.txt'
-                sh '. venv/bin/activate && pytest tests/ -v --junitxml=test-results.xml'
+                sh '. venv/bin/activate && python -m pip install --upgrade pip'
+                sh '. venv/bin/activate && python -m pip install -r requirements.txt'
+                sh '. venv/bin/activate && python -m pytest tests/ -v --junitxml=test-results.xml'
             }
             post {
                 always {
-                    junit 'test-results.xml'
+                    junit allowEmptyResults: true, testResults: 'test-results.xml'
                 }
             }
         }
@@ -35,8 +36,8 @@ pipeline {
         stage('Code Quality') {
             steps {
                 echo 'Code Quality Stage: Running flake8 and pylint...'
-                sh '. venv/bin/activate && flake8 app tests --max-line-length=120'
-                sh '. venv/bin/activate && pylint app --exit-zero > pylint-report.txt'
+                sh '. venv/bin/activate && python -m flake8 app tests --max-line-length=120'
+                sh '. venv/bin/activate && python -m pylint app --exit-zero > pylint-report.txt'
             }
             post {
                 always {
@@ -48,8 +49,8 @@ pipeline {
         stage('Security') {
             steps {
                 echo 'Security Stage: Running Bandit and pip-audit scans...'
-                sh '. venv/bin/activate && bandit -r app -f txt -o bandit-report.txt || true'
-                sh '. venv/bin/activate && pip-audit -r requirements.txt > pip-audit-report.txt || true'
+                sh '. venv/bin/activate && python -m bandit -r app -f txt -o bandit-report.txt || true'
+                sh '. venv/bin/activate && python -m pip_audit -r requirements.txt > pip-audit-report.txt || true'
             }
             post {
                 always {
